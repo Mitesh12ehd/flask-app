@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mitesh | Flask App 🚀</title>
+    <title>Mitesh | Flask App</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
@@ -163,7 +163,7 @@
     <div class="container">
         <!-- Profile photo -->
         <div class="profile-photo">
-            <img src="cat.jpeg" alt="Cat Photo">
+            <img src="{{ url_for('static', filename='cat.jpeg') }}" alt="Cat Photo">
         </div>
 
         <!-- Content -->
