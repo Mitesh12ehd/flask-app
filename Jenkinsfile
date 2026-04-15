@@ -13,19 +13,19 @@ pipeline{
                 }
             }
         }
-        stage("Pushing image to private repository"){    s
+        stage("Pushing image to private repository"){
             steps{
                 script{
                     echo "Pushing image to private docker hub repository"
 
                     withCredentials([
                         usernamePassword(
-                            credentialsId: 'docker-hub-cred'
-                            usernameVariable: 'USER'
+                            credentialsId: 'docker-hub-cred',
+                            usernameVariable: 'USER',
                             passwordVariable: 'PASS'
                         )
                     ]){
-                        sh "echo ${PASS} | docker login -u miteshch --password-stdin"
+                        sh "echo ${PASS} | docker login -u ${USER} --password-stdin"
                         sh "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
                     }
                 }
