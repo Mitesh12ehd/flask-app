@@ -3,6 +3,7 @@ pipeline{
     environment{
         DOCKER_REPO = "miteshch/demo-app"
         IMAGE_NAME = "flask-app-$BUILD_NUMBER"
+        TARGET_SERVER_PUBLIC_IP = "13.126.207.18"
     }
     stages{
         stage("Build image"){
@@ -27,6 +28,33 @@ pipeline{
                     ]){
                         sh "echo ${PASS} | docker login -u ${USER} --password-stdin"
                         sh "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
+                    }
+                }
+            }
+        }
+        stage("Deploy application"){
+            steps{
+                script{
+                    echo "Deploying application using new docker image"
+                    sshagent(['ec2-server-key']){
+
+                        // Copy docker compose file
+                        sh """
+                        scp -o StrictHostKeyChecking=no docker-compose.yaml \
+                        ec2-user@${TARGET_SERVER_PUBLIC_IP}:/home/ec2-user/
+                        """
+
+                        // Stop existing containers
+                        sh """
+                        ssh -o StrictHostKeyChecking=no ec2-user@${TARGET_SERVER_PUBLIC_IP} \
+                        'cd /home/ec2-user && docker compose down'
+                        """
+
+                        // Start new containers
+                        sh """
+                        ssh -o StrictHostKeyChecking=no ec2-user@${TARGET_SERVER_PUBLIC_IP} \
+                        'cd /home/ec2-user && docker compose up -d'
+                        """
                     }
                 }
             }
