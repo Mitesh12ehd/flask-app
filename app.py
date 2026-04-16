@@ -27,6 +27,7 @@ def init_db():
 
 @app.route('/')
 def hello():
+    print("Hello from flask server")
     cur = mysql.connection.cursor()
     cur.execute('SELECT message FROM messages')
     messages = cur.fetchall()
