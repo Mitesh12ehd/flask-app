@@ -1,6 +1,6 @@
 services:
   flask-app:
-    image: flask-app:1.0
+    image: ${DOCKER_REPO}:${IMAGE_NAME}
     ports:
       - 5000:5000
     environment:
@@ -23,7 +23,7 @@ services:
       - mysql-data:/var/lib/mysql
     restart: always
     healthcheck:  
-      test: ["CMD", "mysqladmin", "ping", "-h","localhost","-uroot", "-proot"]
+      test: ["CMD", "mysqladmin", "ping", "-h","localhost","-uroot", "-prootpass"]
       interval: 10s
       timeout: 5s
       retries: 5

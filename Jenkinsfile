@@ -2,7 +2,7 @@ pipeline{
     agent any
     environment{
         DOCKER_REPO = "miteshch/demo-app"
-        IMAGE_NAME = "flask-app-$BUILD_NUMBER"
+        IMAGE_NAME = "flask-app-${BUILD_NUMBER}"
         TARGET_SERVER_PUBLIC_IP = "13.126.207.18"
     }
     stages{
@@ -44,17 +44,24 @@ pipeline{
                         ec2-user@${TARGET_SERVER_PUBLIC_IP}:/home/ec2-user/
                         """
 
-                        // Stop existing containers
-                        sh """
-                        ssh -o StrictHostKeyChecking=no ec2-user@${TARGET_SERVER_PUBLIC_IP} \
-                        'cd /home/ec2-user && docker compose down'
-                        """
+                        withCredentials([usernamePassword(
+                            credentialsId: 'docker-hub-cred',
+                            usernameVariable: 'USER',
+                            passwordVariable: 'PASS'
+                        )]){
 
-                        // Start new containers
-                        sh """
-                        ssh -o StrictHostKeyChecking=no ec2-user@${TARGET_SERVER_PUBLIC_IP} \
-                        'cd /home/ec2-user && docker compose up -d'
-                        """
+                            sh """
+                            ssh -o StrictHostKeyChecking=no ec2-user@${TARGET_SERVER_PUBLIC_IP} << EOF
+
+                            echo $PASS | docker login -u $USER --password-stdin
+
+                            cd /home/ec2-user
+                            docker compose down
+                            DOCKER_REPO=${DOCKER_REPO} IMAGE_NAME=${IMAGE_NAME} docker compose up -d
+
+                            EOF
+                            """
+                        }
                     }
                 }
             }
