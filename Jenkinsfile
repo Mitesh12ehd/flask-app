@@ -55,7 +55,8 @@ pipeline{
                             "echo ${PASS} | docker login -u ${USER} --password-stdin && \
                             cd /home/ec2-user && \
                             docker compose down && \
-                            DOCKER_REPO=${DOCKER_REPO} IMAGE_NAME=${IMAGE_NAME} docker compose up -d"
+                            DOCKER_REPO=${DOCKER_REPO} IMAGE_NAME=${IMAGE_NAME} docker compose up -d" && \
+                            docker image prune -af
                             """
                         }
                     }
