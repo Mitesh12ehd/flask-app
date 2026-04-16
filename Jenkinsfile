@@ -51,7 +51,7 @@ pipeline{
                         )]){
 
                             sh """
-                            ssh -o StrictHostKeyChecking=no ec2-user@${TARGET_SERVER_PUBLIC_IP} << EOF
+                            ssh -o StrictHostKeyChecking=no ec2-user@${TARGET_SERVER_PUBLIC_IP} <<EOF
 
                             echo $PASS | docker login -u $USER --password-stdin
 

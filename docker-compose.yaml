@@ -23,7 +23,7 @@ services:
       - mysql-data:/var/lib/mysql
     restart: always
     healthcheck:  
-      test: ["CMD", "mysqladmin", "ping", "-h","localhost","-uroot", "-prootpass"]
+      test: ["CMD", "mysqladmin", "ping", "-h","localhost","-uroot", "-proot"]
       interval: 10s
       timeout: 5s
       retries: 5
