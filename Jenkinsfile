@@ -51,15 +51,11 @@ pipeline{
                         )]){
 
                             sh """
-                            ssh -o StrictHostKeyChecking=no ec2-user@${TARGET_SERVER_PUBLIC_IP} <<EOF
-
-                            echo $PASS | docker login -u $USER --password-stdin
-
-                            cd /home/ec2-user
-                            docker compose down
-                            DOCKER_REPO=${DOCKER_REPO} IMAGE_NAME=${IMAGE_NAME} docker compose up -d
-
-                            EOF
+                            ssh -o StrictHostKeyChecking=no ec2-user@${TARGET_SERVER_PUBLIC_IP} \
+                            "echo ${PASS} | docker login -u ${USER} --password-stdin && \
+                            cd /home/ec2-user && \
+                            docker compose down && \
+                            DOCKER_REPO=${DOCKER_REPO} IMAGE_NAME=${IMAGE_NAME} docker compose up -d"
                             """
                         }
                     }
